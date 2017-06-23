@@ -117,7 +117,7 @@ class StreamListener(tweepy.StreamListener):
 
         tweet_prefix = '@'+screen_name+'\n'
 
-        if parent is None and not_one_symbol and 'STARTGAME' in text:
+        if parent is None and not_one_symbol and 'STARTGAME' in text.upper():
             state = GameState()
         else:
             state = parse_state(text, parent=parent)
