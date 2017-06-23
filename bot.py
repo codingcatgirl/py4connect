@@ -150,7 +150,8 @@ class StreamListener(tweepy.StreamListener):
 
             # noinspection PyTypeChecker
             if not np.any(new_state.field == new_state.player):
-                reply += 'The game is on! Your Emoji is: %s' % new_state.player_symbols[new_state.player]
+                reply += 'The game is on! ✨ Your Emoji is: %s' % new_state.player_symbols[new_state.player]
+                reply += '\nJust reply to this tweet with the updated game board.'
             if won:
                 print('[StreamListener] ...and we won! Yeah!')
                 reply += 'I win! 😎'
