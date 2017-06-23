@@ -132,7 +132,7 @@ class StreamListener(tweepy.StreamListener):
             return
 
         print('[StreamListener] valid state!')
-        if filename is not None:
+        if filename is not None and parent is not None:
             delete_state(filename)
 
         if state.last_move_won():
