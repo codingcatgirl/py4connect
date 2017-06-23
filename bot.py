@@ -57,8 +57,6 @@ def parse_state(message, parent=None):
         parent = GameState(player=2)
         for move in parent.possible_moves:
             possible_states.append(parent.put(move))
-    print(field)
-    print(possible_states)
     for possible_state in possible_states:
         if np.all(possible_state.field == field):
             return possible_state
@@ -84,7 +82,7 @@ class StreamListener(tweepy.StreamListener):
     def on_data(self, rawdata):
         data = json.loads(rawdata)
 
-        if data.get('in_reply_to_screen_name', '').lower() != self.screen_name.lower():
+        if data.get('in_reply_to_screen_name', '') != self.screen_name:
             return
 
         user_name = data.get('user', {}).get('name', '')
@@ -233,7 +231,7 @@ except FileNotFoundError:
     auth_data['consumer_key'] = input('consumer_key >>> ').strip()
     auth_data['consumer_secret'] = input('consumer_secret >>> ').strip()
     auth = tweepy.OAuthHandler(auth_data['consumer_key'], auth_data['consumer_secret'])
-    print('You can now authenticate here:', auth.get_authorization_url())
+    print('You can now authenticate here:', auth.get_authorization_url(access_type='read-write'))
     verifier = input('verifier >>> ').strip()
     auth.get_access_token(verifier)
     auth_data['access_token'] = auth.access_token
