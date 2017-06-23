@@ -160,7 +160,7 @@ class StreamListener(tweepy.StreamListener):
                 print('[StreamListener] ...and we won! Yeah!')
                 reply += 'I win! 😎'
                 new_state = None
-            if not new_state.possible_moves:
+            elif not new_state.possible_moves:
                 print('[StreamListener] ...and game over. It\'s a tie!')
                 reply += 'So... it\'s a tie! 🙂 Well played!'
                 new_state = None
