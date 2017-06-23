@@ -33,7 +33,6 @@ class GameState(GameStateBase):
     def __repr__(self):
         result = self.pre_field
         result += '\n' if self.pre_field else ''
-        won = self.last_move_won()
         for y, row in enumerate(self.field.astype(int)):
             result += self.pre_line
             for x, val in enumerate(row):
@@ -55,17 +54,11 @@ class GameState(GameStateBase):
     def other_player(self):
         return 2 if self.player == 1 else 1
 
-    def check_rows(self, check, n=4):
-        for i in range(check.shape[1] - n + 1):
-            if np.any(np.all(check[:, i: i+n], 1)):
-                return True
-        return False
-
     @property
     def possible_moves(self):
         return tuple(i for i, row in enumerate(self.rows) if row >= 0)
 
-    def last_move_won(self, n=4):
+    def last_move_won(self):
         check = self.field == self.other_player
         if check.sum() < 4:
             return None
@@ -141,7 +134,7 @@ class GameState(GameStateBase):
             if score_them:
                 bad_for_them[col] = score_them
 
-            next_state = state.put(col)
+            next_state = self.put(col)
 
             if row >= 0:
                 score_them_above = next_state.coords_score_for(row-1, col, self.other_player)
@@ -176,51 +169,52 @@ class GameState(GameStateBase):
         return min(best_choices_scored.items(), key=itemgetter(1))[0]
 
 
-computer_players = []
+if __name__ == '__main__':
+    computer_players = []
 
-for player in (1, 2):
-    print('Player %s is a computer? (y/n)' % player)
-    data = ''
-    while data not in ('y', 'n'):
-        data = input('>>> ')
-    if data == 'y':
-        computer_players.append(player)
-    print()
-
-computer_wait = False
-if computer_players:
-    print('Wait after computer moves? (y/N)')
-    data = None
-    while data not in ('y', 'n', 'N', ''):
-        data = input('>>> ')
-    computer_wait = (data == 'y')
-    print()
-
-state = GameState()
-player = state.player
-while True:
-    print(state)
-    print()
-
-    if state.last_move_won():
-        print('Player %d (%s) won!' % (player, 'Computer' if player in computer_players else 'Human'))
-        break
-
-    if not state.possible_moves:
-        print('Noone won!')
-        break
-
-    player = state.player
-
-    print('Player %d (%s, %s) moves:' % (player, ' XO'[player], 'computer' if player in computer_players else 'human'))
-    if player in computer_players:
-        if computer_wait:
-            input('Enter to continue:\n>>> ')
-        state = state.put(state.get_best_move())
-    else:
+    for player in (1, 2):
+        print('Player %s is a computer? (y/n)' % player)
         data = ''
-        possible = [str(s) for s in state.possible_moves]
-        while data not in possible:
-            data = input('Select column (%s) to continue:\n>>> ' % ', '.join(possible))
-        state = state.put(int(data))
+        while data not in ('y', 'n'):
+            data = input('>>> ')
+        if data == 'y':
+            computer_players.append(player)
+        print()
 
+    computer_wait = False
+    if computer_players:
+        print('Wait after computer moves? (y/N)')
+        data = None
+        while data not in ('y', 'n', 'N', ''):
+            data = input('>>> ')
+        computer_wait = (data == 'y')
+        print()
+
+    state = GameState()
+    player = state.player
+    while True:
+        print(state)
+        print()
+
+        if state.last_move_won():
+            print('Player %d (%s) won!' % (player, 'Computer' if player in computer_players else 'Human'))
+            break
+
+        if not state.possible_moves:
+            print('Noone won!')
+            break
+
+        player = state.player
+
+        print('Player %d (%s, %s) moves:' %
+              (player, ' XO'[player], 'computer' if player in computer_players else 'human'))
+        if player in computer_players:
+            if computer_wait:
+                input('Enter to continue:\n>>> ')
+            state = state.put(state.get_best_move())
+        else:
+            data = ''
+            possible = [str(s) for s in state.possible_moves]
+            while data not in possible:
+                data = input('Select column (%s) to continue:\n>>> ' % ', '.join(possible))
+            state = state.put(int(data))

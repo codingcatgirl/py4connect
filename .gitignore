@@ -1,1 +1,4 @@
 .idea
+twitterauth*
+gamestate_*
+__pycache__
