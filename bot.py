@@ -62,7 +62,7 @@ def parse_state(message, parent=None):
             return possible_state
     if first_move:
         return 'That is not a valid first move.'
-    return 'That is not a valid move.'
+    return 'That is not a valid move. 😉 Please reply to my last move again with a valid move.'
 
 
 class StreamListener(tweepy.StreamListener):
