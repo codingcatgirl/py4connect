@@ -82,15 +82,15 @@ class StreamListener(tweepy.StreamListener):
     def on_data(self, rawdata):
         data = json.loads(rawdata)
 
-        if data.get('in_reply_to_screen_name', '') != self.screen_name:
+        text = data.get('text', '')
+        if (data.get('in_reply_to_screen_name', '') != self.screen_name and
+                ('@'+self.screen_name.lower()) not in text.lower()):
             return
 
         user_name = data.get('user', {}).get('name', '')
         screen_name = data.get('user', {}).get('screen_name', '')
         status_id = data.get('id_str', None)
         print('[StreamListener] incoming tweet from %s (@%s):' % (user_name, screen_name))
-
-        text = data.get('text', '')
 
         print('[StreamListener] '+repr(text))
         parent = None
