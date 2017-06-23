@@ -103,7 +103,6 @@ class StreamListener(tweepy.StreamListener):
                 parent = load_state(filename)
             except FileNotFoundError:
                 print('[StreamListener] File not found. ignoring.')
-                return
             except:
                 print('[StreamListener] Something else happened. ignoring.')
                 traceback.print_exc()
