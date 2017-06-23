@@ -140,6 +140,11 @@ class StreamListener(tweepy.StreamListener):
             self.dispatcher.tweet(text=tweet_prefix+'You win! 👏 🌈 Congratulations!', in_reply_to=status_id)
             return
 
+        if not state.possible_moves:
+            print('[StreamListener] Game over. It\'s a tie!')
+            self.dispatcher.tweet(text=tweet_prefix + 'So... it\'s a tie! 🙂 Well played!', in_reply_to=status_id)
+            return
+
         print('[StreamListener] determining our next move...')
         try:
             new_state = state.put(state.get_best_move())
@@ -154,9 +159,13 @@ class StreamListener(tweepy.StreamListener):
             if won:
                 print('[StreamListener] ...and we won! Yeah!')
                 reply += 'I win! 😎'
+                new_state = None
+            if not new_state.possible_moves:
+                print('[StreamListener] ...and game over. It\'s a tie!')
+                reply += 'So... it\'s a tie! 🙂 Well played!'
+                new_state = None
 
-            self.dispatcher.tweet(text=reply, in_reply_to=status_id, state=(None if won else new_state),
-                                  filename_prefix=screen_name+'_')
+            self.dispatcher.tweet(text=reply, in_reply_to=status_id, state=new_state, filename_prefix=screen_name+'_')
 
         except:
             print('[StreamListener] Oh no, something went wrong!')
