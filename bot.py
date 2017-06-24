@@ -212,6 +212,10 @@ class TweetDispatcher:
 
     def tweet(self, text, in_reply_to=None, state=None, filename_prefix=''):
         print('[TweetDispatcher] Queueing tweet:\n%s' % text)
+        if len(text) < 137:
+            text += '\n('+str(time.time())[-6:]+')'
+            text = text[:140]
+
         self.tweet_queue.put((text, in_reply_to, state, filename_prefix))
 
 
